@@ -82,4 +82,3 @@ This project is licensed under the MIT License. See the `LICENSE` file for detai
 - [Kotlin/Wasm](https://kotl.in/wasm/)
 
 Make your meetings more exciting with **Lucky Roulette**!
-```
