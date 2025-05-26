@@ -1,11 +1,8 @@
 package org.ajcm.luckyroulette.ui.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -14,13 +11,10 @@ import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import luckyroulette.composeapp.generated.resources.Res
-import luckyroulette.composeapp.generated.resources.ic_roulette_chip
-import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -30,7 +24,7 @@ fun LuckyTopAppBar(
     TopAppBar(
         modifier = modifier,
         colors = topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            containerColor = MaterialTheme.colorScheme.background,
             titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
         ),
         title = {
@@ -41,24 +35,19 @@ fun LuckyTopAppBar(
             ) {
                 Text(
                     text = "Lucky Roulette",
-                    style = MaterialTheme.typography.headlineLarge,
+                    style = TextStyle(
+                        fontSize = MaterialTheme.typography.displayLarge.fontSize,
+                        fontWeight = FontWeight.ExtraBold,
+                        brush = Brush.linearGradient(
+                            colors = listOf(
+                                MaterialTheme.colorScheme.primary,
+                                MaterialTheme.colorScheme.secondary
+                            )
+                        )
+                    ),
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-
-                Spacer(
-                    modifier = Modifier.size(8.dp)
-                )
-
-                Image(
-                    painterResource(Res.drawable.ic_roulette_chip),
-                    contentDescription = "Logo",
-                    colorFilter = ColorFilter.tint(
-                        MaterialTheme.colorScheme.onPrimary,
-                    ),
-                    modifier = Modifier
-                        .size(24.dp)
+                    color = MaterialTheme.colorScheme.onBackground
                 )
             }
         }

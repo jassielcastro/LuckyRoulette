@@ -1,5 +1,6 @@
 package org.ajcm.luckyroulette.ui.participants
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -8,7 +9,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -17,7 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import luckyroulette.composeapp.generated.resources.Res
 import luckyroulette.composeapp.generated.resources.team_work_bro
 import org.ajcm.luckyroulette.ui.components.LuckyTextField
@@ -34,7 +33,11 @@ fun ParticipantsView(
     Surface(
         modifier = modifier,
         shape = RoundedCornerShape(8.dp),
-        color = MaterialTheme.colorScheme.primaryContainer,
+        border = BorderStroke(
+            width = 1.dp,
+            color = MaterialTheme.colorScheme.primary
+        ),
+        color = MaterialTheme.colorScheme.background,
         tonalElevation = 4.dp,
     ) {
         Column(
@@ -137,15 +140,4 @@ fun ParticipantsView(
             )
         }
     }
-}
-
-@Composable
-fun TextPlaceHolder(text: String, modifier: Modifier = Modifier) {
-    Text(
-        text = text,
-        color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.5f),
-        fontSize = 16.sp,
-        fontWeight = FontWeight.ExtraLight,
-        modifier = modifier
-    )
 }
