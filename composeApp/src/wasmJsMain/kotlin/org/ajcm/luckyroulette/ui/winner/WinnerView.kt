@@ -1,29 +1,22 @@
 package org.ajcm.luckyroulette.ui.winner
 
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.togetherWith
+import androidx.compose.animation.*
+import androidx.compose.animation.core.*
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import org.ajcm.luckyroulette.theme.surfaceBrightDark
-import org.ajcm.luckyroulette.theme.surfaceDimDark
+import org.ajcm.luckyroulette.theme.rouletteColors
 import org.ajcm.luckyroulette.ui.models.RouletteItem
 import org.ajcm.luckyroulette.ui.roulette.RouletteSpinnerView
 
@@ -32,10 +25,46 @@ fun WinnerView(
     winner: RouletteItem,
     topics: List<String>,
 ) {
+    val infiniteTransition = rememberInfiniteTransition()
+    val animatedColor by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            tween(1500, easing = LinearEasing),
+            RepeatMode.Reverse
+        ),
+    )
+
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        color = MaterialTheme.colorScheme.background,
+        shape = MaterialTheme.shapes.medium,
+        border = BorderStroke(
+            width = 4.dp,
+            Brush.linearGradient(
+                colors = listOf(
+                    MaterialTheme.colorScheme.primary,
+                    MaterialTheme.colorScheme.secondary,
+                    MaterialTheme.colorScheme.primary
+                ),
+                start = Offset(0f, 0f),
+                end = Offset( 1000 * animatedColor, 0f)
+            )
+        )
+    ) {
+        WinnerContent(winner, topics)
+    }
+}
+
+@Composable
+fun WinnerContent(
+    winner: RouletteItem,
+    topics: List<String>,
+) {
     Column(
         modifier = Modifier
             .padding(16.dp)
-            .fillMaxSize(),
+            .fillMaxWidth(),
         verticalArrangement = Arrangement.Top
     ) {
         Text(
@@ -89,7 +118,7 @@ fun WinnerView(
         TopicRouletteView(
             topics = topics,
             modifier = Modifier
-                .fillMaxSize(0.9f)
+                .fillMaxWidth(0.9f)
                 .padding(16.dp)
                 .align(Alignment.CenterHorizontally),
         )
@@ -119,7 +148,7 @@ fun TopicRouletteView(
                 items = topics.buildRouletteTopics(),
                 fontSize = 12.sp,
                 modifier = Modifier
-                    .fillMaxSize()
+                    .fillMaxWidth()
                     .padding(16.dp),
                 onSpinEnd = { selected ->
                     topic = selected.value
@@ -144,11 +173,7 @@ private fun List<String>.buildRouletteTopics(): List<RouletteItem> {
     return this.mapIndexed { index, value ->
         RouletteItem(
             value = value,
-            color = if (index % 2 == 0) {
-                surfaceDimDark
-            } else {
-                surfaceBrightDark
-            }
+            color = rouletteColors[index % rouletteColors.size]
         )
     }
 }
