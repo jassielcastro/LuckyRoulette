@@ -14,6 +14,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -26,9 +27,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import luckyroulette.composeapp.generated.resources.Res
 import luckyroulette.composeapp.generated.resources.ic_add
-import org.ajcm.luckyroulette.ui.participants.TextPlaceHolder
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
@@ -54,7 +55,11 @@ fun LuckyTextField(
                 )
             },
             textStyle = TextStyle(
-                color = if (fieldText.isEmpty()) MaterialTheme.colorScheme.background else MaterialTheme.colorScheme.onPrimary,
+                color = if (fieldText.isEmpty()) {
+                    MaterialTheme.colorScheme.background
+                } else {
+                    MaterialTheme.colorScheme.onBackground.copy(alpha = 0.9f)
+                },
                 fontWeight = FontWeight.Bold
             ),
             shape = RoundedCornerShape(16.dp),
@@ -69,8 +74,8 @@ fun LuckyTextField(
             },
             colors = OutlinedTextFieldDefaults.colors(
                 cursorColor = MaterialTheme.colorScheme.primary,
-                unfocusedBorderColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f),
-                focusedBorderColor = MaterialTheme.colorScheme.onPrimary
+                unfocusedBorderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                focusedBorderColor = MaterialTheme.colorScheme.primary
             ),
             modifier = Modifier
                 .fillMaxWidth(0.85f)
@@ -83,7 +88,7 @@ fun LuckyTextField(
                 .height(56.dp),
             shape = RoundedCornerShape(16.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.secondary,
+                containerColor = MaterialTheme.colorScheme.primary,
             ),
             onClick = {
                 if (fieldText.isBlank()) return@Button
@@ -102,4 +107,15 @@ fun LuckyTextField(
             )
         }
     }
+}
+
+@Composable
+fun TextPlaceHolder(text: String, modifier: Modifier = Modifier) {
+    Text(
+        text = text,
+        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
+        fontSize = 16.sp,
+        fontWeight = FontWeight.ExtraLight,
+        modifier = modifier
+    )
 }

@@ -1,6 +1,7 @@
 package org.ajcm.luckyroulette.ui.roulette
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -82,17 +83,21 @@ fun RouletteSpinnerComponent(
                 .padding(horizontal = 16.dp)
                 .align(Alignment.TopEnd),
             shape = RoundedCornerShape(16.dp),
+            border = BorderStroke(
+                width = 2.dp,
+                color = MaterialTheme.colorScheme.primary,
+            ),
             colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.secondary,
+                containerColor = MaterialTheme.colorScheme.background,
             ),
             onClick = {
                 onClear()
             }
         ) {
             Text(
-                text = "Reset roulette",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onBackground,
+                text = "Reset",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Bold,
             )
         }
