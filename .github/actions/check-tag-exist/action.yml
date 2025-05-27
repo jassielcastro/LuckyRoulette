@@ -26,14 +26,6 @@ runs:
       env:
         GITHUB_TOKEN: ${{ inputs.github_token }}
 
-    - name: Close issue if tag exist
-      if: steps.checkTag.outputs.exists == 'true'
-      uses: ./.github/actions/close-issue
-      with:
-        number: ${{ inputs.issue_number }}
-        title: ${{ inputs.issue_title }}
-        comments: '**${{ inputs.tag }}** release exists!\r\nCheck latest release and bump to next version.'
-
     - if: steps.checkTag.outputs.exists == 'true'
       uses: actions/github-script@v3
       with:
