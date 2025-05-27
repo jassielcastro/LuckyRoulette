@@ -2,6 +2,8 @@ package org.ajcm.luckyroulette
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -36,47 +38,32 @@ fun App() {
                 LuckyTopAppBar()
             }
         ) { innerPadding ->
-            Row(
+            LuckyRouletteAdaptativeContent(
                 modifier = Modifier
                     .padding(innerPadding)
                     .fillMaxSize()
                     .background(MaterialTheme.colorScheme.background)
                     .padding(16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.Top
-            ) {
-                ParticipantsView(
-                    modifier = Modifier
-                        .fillMaxWidth(0.35f)
-                        .fillMaxHeight()
-                        .padding(16.dp),
-                    onAddParticipant = { participantName ->
-                        participants.add(
-                            RouletteItem(
-                                value = participantName,
-                            )
+                onAddParticipant = { participantName ->
+                    participants.add(
+                        RouletteItem(
+                            value = participantName,
                         )
-                    },
-                    onAddTopic = { topicText ->
-                        if (topicText !in topics) {
-                            topics.add(topicText)
-                        }
+                    )
+                },
+                onAddTopic = { topicText ->
+                    if (topicText !in topics) {
+                        topics.add(topicText)
                     }
-                )
-
-                RouletteContainerView(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(16.dp),
-                    items = participants,
-                    onSpinEnd = { winner ->
-                        winnerParticipant = winner
-                    },
-                    onClear = {
-                        participants.clear()
-                    }
-                )
-            }
+                },
+                items = participants,
+                onSpinEnd = { winner ->
+                    winnerParticipant = winner
+                },
+                onClear = {
+                    participants.clear()
+                }
+            )
 
             if (winnerParticipant != null) {
                 BasicAlertDialog(
@@ -93,4 +80,103 @@ fun App() {
             }
         }
     }
+}
+
+@Composable
+fun LuckyRouletteAdaptativeContent(
+    modifier: Modifier,
+    items: List<RouletteItem>,
+    onAddParticipant: (String) -> Unit,
+    onAddTopic: (String) -> Unit,
+    onSpinEnd: (RouletteItem) -> Unit,
+    onClear: () -> Unit,
+) {
+    BoxWithConstraints(
+        modifier = modifier
+    ) {
+        val isCompact = maxWidth < 920.dp
+
+        if (isCompact) {
+            Column(
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+            ) {
+                ParticipantsSection(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    isCompact = isCompact,
+                    onAddParticipant = onAddParticipant,
+                    onAddTopic = onAddTopic
+                )
+
+                RouletteSection(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    items = items,
+                    onSpinEnd = onSpinEnd,
+                    onClear = onClear
+                )
+            }
+        } else {
+            Row(
+                modifier = Modifier
+                    .fillMaxSize(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Top
+            ) {
+                ParticipantsSection(
+                    modifier = Modifier
+                        .fillMaxWidth(0.35f)
+                        .fillMaxHeight()
+                        .padding(16.dp),
+                    isCompact = isCompact,
+                    onAddParticipant = onAddParticipant,
+                    onAddTopic = onAddTopic
+                )
+
+                RouletteSection(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    items = items,
+                    onSpinEnd = onSpinEnd,
+                    onClear = onClear
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun ParticipantsSection(
+    modifier: Modifier = Modifier,
+    isCompact: Boolean,
+    onAddParticipant: (String) -> Unit,
+    onAddTopic: (String) -> Unit
+) {
+    ParticipantsView(
+        modifier = modifier,
+        isCompact = isCompact,
+        onAddParticipant = onAddParticipant,
+        onAddTopic = onAddTopic
+    )
+}
+
+@Composable
+fun RouletteSection(
+    modifier: Modifier = Modifier,
+    items: List<RouletteItem>,
+    onSpinEnd: (RouletteItem) -> Unit,
+    onClear: () -> Unit
+) {
+    RouletteContainerView(
+        modifier = modifier,
+        items = items,
+        onSpinEnd = onSpinEnd,
+        onClear = onClear
+    )
 }
