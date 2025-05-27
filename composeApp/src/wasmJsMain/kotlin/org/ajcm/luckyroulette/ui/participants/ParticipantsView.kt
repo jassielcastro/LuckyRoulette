@@ -25,6 +25,7 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 fun ParticipantsView(
     modifier: Modifier,
+    isCompact: Boolean = true,
     onAddParticipant: (String) -> Unit = {},
     onAddTopic: (String) -> Unit = {},
 ) {
@@ -71,7 +72,8 @@ fun ParticipantsView(
             )
 
             LuckyTextField(
-                placeholder = "Enter participant name"
+                placeholder = "Enter participant name",
+                isCompact = isCompact
             ) { participantNameText ->
                 if (participantNameText.isNotBlank()) {
                     onAddParticipant(participantNameText)
@@ -97,7 +99,8 @@ fun ParticipantsView(
             )
 
             LuckyTextField(
-                placeholder = "Enter Topic"
+                placeholder = "Enter Topic",
+                isCompact = isCompact
             ) { topicText ->
                 if (topicText.isNotBlank()) {
                     onAddTopic(topicText)
@@ -122,12 +125,14 @@ fun ParticipantsView(
                     .fillMaxWidth(),
             )
 
-            Image(
-                painter = painterResource(Res.drawable.team_work_bro),
-                contentDescription = "Participants",
-                modifier = Modifier
-                    .fillMaxSize(0.7f)
-            )
+            if (!isCompact) {
+                Image(
+                    painter = painterResource(Res.drawable.team_work_bro),
+                    contentDescription = "Participants",
+                    modifier = Modifier
+                        .fillMaxSize(0.7f)
+                )
+            }
 
             Text(
                 text = "Meetings are where the magic happens — we share, learn, and grow together. Your ideas could spark the next big thing!",
