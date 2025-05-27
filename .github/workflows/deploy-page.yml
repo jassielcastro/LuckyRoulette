@@ -46,3 +46,7 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+  finish-release-hotfix:
+    needs: deploy
+    uses: ./.github/workflows/finish-release-hotfix.yml

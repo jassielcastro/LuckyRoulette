@@ -1,0 +1,27 @@
+name: "Finish release/hotfix issue"
+
+on:
+  workflow_call:
+
+jobs:
+  publish-tag:
+    name: Publish github release
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    steps:
+      - name: Extract version from branch name (for release branches)
+        if: startsWith(github.event.pull_request.head.ref, 'release/')
+        run: |
+          BRANCH_NAME="${{ github.event.pull_request.head.ref }}"
+          VERSION=${BRANCH_NAME#release/}
+          echo "RELEASE_VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Create Release Tag
+        uses: thomaseizinger/create-release@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          target_commitish: ${{ github.event.pull_request.merge_commit_sha }}
+          tag_name: ${{ env.RELEASE_VERSION }}
+          name: ${{ env.RELEASE_VERSION }}
+          draft: false
+          prerelease: false

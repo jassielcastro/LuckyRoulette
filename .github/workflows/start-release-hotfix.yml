@@ -1,0 +1,55 @@
+name: Release and Hotfix Start
+
+on:
+  issues:
+    types: [ labeled ]
+
+permissions:
+  pull-requests: write
+  contents: write
+
+jobs:
+  draft-new-release:
+    name: "Draft a new release"
+    runs-on: ubuntu-latest
+
+    # Only run for issues with release title and release as issue name.
+    if: startsWith(github.event.issue.title, 'Release version') && contains(github.event.issue.labels.*.name, 'release')
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Extract version from issue title
+        run: |
+          TITLE="${{ github.event.issue.title }}"
+          VERSION=${TITLE#Release version }
+          echo "RELEASE_VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Check if tag exists
+        uses: ./.github/actions/check-tag-exist
+        with:
+          issue_number: ${{ github.event.issue.number }}
+          issue_title: ${{ github.event.issue.title }}
+          tag: ${{ env.RELEASE_VERSION }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create release branch
+        uses: ./.github/actions/create-release-pr
+        with:
+          release_type: "release"
+          base_branch: "develop"
+          release_version: ${{ env.RELEASE_VERSION }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create PullRequest
+        uses: thomaseizinger/create-pull-request@master
+        id: create-pull-request
+        with:
+          head: release/${{ env.RELEASE_VERSION }}
+          base: main
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          title: ${{ github.event.issue.title }}
+          reviewers: ${{ github.event.issue.user.login }}
+          body: |
+            Hi @${{ github.event.issue.user.login }}!
+            This PR was created in response to this release issue: #${{ github.event.issue.number }}.
+            I've updated the changelog and bumped the versions in the correct configuration files in this commit: ${{ steps.make-commit.outputs.commit }}.
